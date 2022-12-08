@@ -1,0 +1,4 @@
+- source: app_perf.qmd
+  quarto-pub:
+    - id: 9085dd67-5a02-412d-beea-89b6acb7613a
+      url: 'https://quartopub.com/sites/questionable/improving-app-performance-with-profvis'

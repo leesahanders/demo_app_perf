@@ -190,8 +190,8 @@ For more information refer to [shinyloadtest](https://rstudio.github.io/shinyloa
 
 ## What about Python? 
 
-- [Python profiling tool](https://jiffyclub.github.io/snakeviz/)
-- [Python load testing tool](https://locust.io/)
+- Python profiling tool: <https://jiffyclub.github.io/snakeviz/>
+- Python load testing tool: <https://locust.io/>
 
 
 <!-- # Profiling -->
