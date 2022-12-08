@@ -1,5 +1,8 @@
 # demo_app_perf
 
+This is a quarto presentation on improving app performance containing a profvis example under the test folder. Enjoy!
+
+It can be accessed at: <https://questionable.quarto.pub/improving-app-performance-with-profvis/#/title-slide>
 
 ## Publishing 
 
