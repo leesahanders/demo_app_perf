@@ -13,4 +13,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Resources 
 
+- shinytest2 main documentation: <https://rstudio.github.io/shinytest2/articles/use-application-audit.html#load-testing-with-shinytest2> 
+
+
+Shinyloadtest can use shinytest2 for the recording. This is useful since shinytest2 has a full toolbelt of interaction options and can integrate with CI/CD pipelines. 
+
+## Load testing
+
+```{r}
+library(shinytest2)
+
+shinyloadtest::record_session()
+```
+
+
+
 

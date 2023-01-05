@@ -1,0 +1,14 @@
+name: shinyloadtest_slow
+title: shinyloadtest_slow
+username: lisa.anders
+account: lisa.anders
+server: colorado.posit.co
+hostUrl: https://colorado.posit.co/rsc/__api__
+appId: 14414
+bundleId: 67686
+url: https://colorado.posit.co/rsc/content/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/
+when: 1672959185.66946
+lastSyncTime: 1672959185.66947
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: shinycannon-1.1.3-dd43f6b.jar|shinyloadtest.Rmd
