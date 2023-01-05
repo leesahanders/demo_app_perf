@@ -1,0 +1,65 @@
+---
+title: "shinyloadtest"
+author: "Lisa.Anders"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd(paste0(getwd(),"/test"))
+```
+
+## Resources 
+
+ - <https://rstudio.github.io/shinyloadtest/>
+ - <https://www.rdocumentation.org/packages/shinyloadtest/versions/1.1.0>
+
+## Secret management 
+
+The Connect API key is stored as the r environment variable `connect_api_key`. It can be edited/modified using the usethis package with: 
+```r
+library(usethis)
+usethis::edit_r_environ()
+```
+
+## Load testing
+
+Test a single app that has been deployed to Connect. Use the URL from the "open solo" mode on Connect.  
+ - Solo mode is important. This URL, when opened with developer options, doesn't work: `https://colorado.posit.co/rsc/connect/#/apps/d2c40c48-ae0b-48d8-888a-e8626322565d/access`
+
+```{r}
+library(shinyloadtest)
+
+shinyloadtest::record_session(target_app_url='https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/',
+                              connect_api_key=Sys.getenv("CONNECT_API_KEY"))
+```
+
+This generates a recording.log file which is the "typical user interacting with the app" which we will use for load testing. 
+
+Download and install shinycannon: <https://rstudio.github.io/shinyloadtest/articles/shinycannon.html> 
+
+The below is using a windows OS, but can be modified for other OS. 
+
+Test that shinycannon works by calling the help documentation with: 
+
+```bash
+java -jar shinycannon-1.1.3-dd43f6b.jar -h
+```
+
+Run in terminal: 
+
+```bash
+shinycannon recording.log https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/ --workers 5 --loaded-duration-minutes 2 --output-dir run1
+```
+
+
+
+
+# 
+# 
+
+
+
+
+
+
