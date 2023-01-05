@@ -1,0 +1,16 @@
+---
+title: "shinyloadtest"
+author: "Lisa.Anders"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Set working directory to test folder by running below in console: 
+# setwd(paste0(getwd(),"/test"))
+```
+
+## Resources 
+
+
