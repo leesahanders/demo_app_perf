@@ -79,6 +79,30 @@ Change the output directory and number of workers and run it again:
 java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/ --workers 5 --loaded-duration-minutes 2 --output-dir run2 --overwrite-output
 ```
 
+Alternatively we could pass in the command from R using the `system()` command: 
+
+```{r}
+connect_api_key = Sys.getenv("CONNECT_API_KEY")
+
+system(
+  sprintf(
+    "set SHINYCANNON_CONNECT_API_KEY=",
+    connect_api_key
+    )
+)
+
+target_url <- "https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/"
+workers <- 1
+dir <- "run1"
+system(
+  sprintf(
+    "java -jar shinycannon-1.1.3-dd43f6b.jar recording.log %s --workers %s --loaded-duration-minutes 2 --output-dir %s --overwrite-output",
+    target_url, workers, dir
+  )
+)
+```
+
+
 ## Analyzing the results 
 
 Reference the documentation to understand the different charts: <https://rstudio.github.io/shinyloadtest/articles/analyzing-load-test-logs.html?q=output#report-output> 
