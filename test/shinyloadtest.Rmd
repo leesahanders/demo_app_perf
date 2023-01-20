@@ -84,7 +84,7 @@ connect_api_key = Sys.getenv("CONNECT_API_KEY")
 
 system(
   sprintf(
-    "set SHINYCANNON_CONNECT_API_KEY=",
+    "set SHINYCANNON_CONNECT_API_KEY=%s",
     connect_api_key
     )
 )
