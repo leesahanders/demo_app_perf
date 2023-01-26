@@ -121,14 +121,3 @@ shinyloadtest_report(df, "report.html")
 
 ```
 
-
-## Related packages
-
- - Novartis developed shinyValidator: <https://github.com/Novartis/shinyValidator> 
- - shinyValidator slide deck: <https://appsilonconf2022.rinterface.com/?panelset3=package-your-app2&panelset4=what2&panelset5=purpose2#1> 
-   - (Note that shinyValidator is not to be confused with shinyValidate which is used for input validation: <https://rstudio.github.io/shinyvalidate/> )
- - reactlog: <https://rstudio.github.io/reactlog/> 
- - shinytest2: <https://rstudio.github.io/shinytest2/articles/use-application-audit.html> 
- - Python load testing: <https://locust.io/> 
-
-
