@@ -35,10 +35,6 @@ library(attempt)
 Based on the headless instructions, we will use Connect to run our code integrated with shinytest2: <https://rstudio.github.io/shinytest2/articles/use-application-audit.html?q=load%20test#load-testing-with-shinytest2> 
 
 
-
-
-
-
 Load some functions: 
 
 ```{r}

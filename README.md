@@ -9,8 +9,9 @@ It can be accessed at: <https://questionable.quarto.pub/improving-app-performanc
 There are links to various additional and recommended resources sprinkled throughout, however here a few overview level recommendations: 
 
 Benchmarking / profiling tools
--   Shiny: [shinyloadtest](https://github.com/rstudio/shinyloadtest) / [profvis](https://rstudio.github.io/profvis/)
+-   Profiling your shiny app with [profvis](https://shiny.rstudio.com/articles/profiling.html), [shinyloadtest](https://github.com/rstudio/shinyloadtest), [shinytest2](https://rstudio.github.io/shinytest2/articles/use-application-audit.html#load-testing-with-shinytest2)
 -   Plumber: [profvis](https://rstudio.github.io/profvis/)
+-   More granular profiling with [microbenchmark](https://cran.r-project.org/web/packages/microbenchmark/index.html)
 -   Dash: [Dash Dev Tools](https://dash.plotly.com/devtools) / [pyinstrument](https://pyinstrument.readthedocs.io/en/latest/guide.html#profile-a-specific-chunk-of-code)
 -   Streamlit / Bokeh / Flask / FastAPI: [pyinstrument](https://pyinstrument.readthedocs.io/en/latest/guide.html#profile-a-specific-chunk-of-code)
 
