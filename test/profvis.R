@@ -2,6 +2,7 @@ setwd(paste0(getwd(),"/test"))
 
 library(profvis)
 library(ggplot2)
+library(shiny)
 
 # Simple example
 profvis({

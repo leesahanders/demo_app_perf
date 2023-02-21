@@ -56,15 +56,28 @@ cd test
 java -jar shinycannon-1.1.3-dd43f6b.jar -h
 ```
 
-Set the env variable for the connect api key in your terminal with (note that `set` is used in windows, `export` for mac or linux). Do this in terminal (after adding your API key): 
+Set the env variable for the connect api key in your terminal with (note that `set` is used in windows, `export` for mac or linux). Do this in terminal (after adding your API key). 
 
+Windows: 
 ```bash
 set SHINYCANNON_CONNECT_API_KEY=<add your key here>
 ```
 
-Verify that it was set with: 
+Linux: 
+```bash
+export SHINYCANNON_CONNECT_API_KEY=<add your key here>
+```
+
+Verify that it was set (note that %% is used in windows, $ in linux). 
+
+Windows: 
 ```bash
 echo %SHINYCANNON_CONNECT_API_KEY%
+```
+
+Linux:
+```bash
+echo $SHINYCANNON_CONNECT_API_KEY
 ```
 
 Run the load test in terminal: 
@@ -86,7 +99,8 @@ connect_api_key = Sys.getenv("CONNECT_API_KEY")
 
 system(
   sprintf(
-    "set SHINYCANNON_CONNECT_API_KEY=",
+    # "set SHINYCANNON_CONNECT_API_KEY=",
+     "export SHINYCANNON_CONNECT_API_KEY=",
     connect_api_key
     )
 )
@@ -113,8 +127,8 @@ library(dplyr)
 
 df <- load_runs(
   `1 user` = "run1",
-  `5 users` = "run2",
-  `50 users` = "run3"
+  `5 users` = "run2"#,
+  #`50 users` = "run3"
 )
 
 shinyloadtest_report(df, "report.html")
