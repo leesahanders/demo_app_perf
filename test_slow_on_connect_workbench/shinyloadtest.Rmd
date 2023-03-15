@@ -33,15 +33,20 @@ usethis::edit_r_environ()
 ## Create "Recording" of a typical user's interaction
 
 Test a single app that has been deployed to Connect. Use the URL from the "open solo" mode on Connect.  
- - Solo mode is important. This URL, when opened with developer options, doesn't work: `https://colorado.posit.co/rsc/connect/#/apps/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/access`
+ - Solo mode is important. This URL, when opened with developer options, doesn't work: `https://colorado.posit.co/rsc/connect/#/apps/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/access` but this one does: `https://colorado.posit.co/rsc/content/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/`
 
 ```{r}
 library(shinyloadtest)
 
-shinyloadtest::record_session(
-  target_app_url='https://colorado.posit.co/rsc/content/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/', 
-  connect_api_key=Sys.getenv("CONNECT_API_KEY"))
+# For some reason it's failing on main currently, websocket error
+# shinyloadtest::record_session(
+#   target_app_url='https://colorado.posit.co/rsc/content/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/', 
+#   connect_api_key=Sys.getenv("CONNECT_API_KEY"))
 
+# Works on staging
+shinyloadtest::record_session(
+  target_app_url='https://staging.colorado.posit.co/rsc/content/837525f0-b7f7-4c6d-9cd1-77fdd4a2ebc0',
+  connect_api_key=Sys.getenv("CONNECT_API_KEY_STAGING"))
 ```
 
 This generates a recording.log file which is the "typical user interacting with the app" which we will use for load testing. 
@@ -57,7 +62,7 @@ The below is using a windows OS, but can be modified for other OS.
 Test that shinycannon works by calling the help documentation with: 
 
 ```bash
-cd test
+cd test_slow_on_connect_workbench
 java -jar shinycannon-1.1.3-dd43f6b.jar -h
 ```
 
@@ -92,13 +97,17 @@ The load testing will be run either from terminal or from R using the system or 
 Run the load test in terminal: 
 
 ```bash
-java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/ --workers 1 --loaded-duration-minutes 2 --output-dir run1 --overwrite-output
+java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://staging.colorado.posit.co/rsc/content/837525f0-b7f7-4c6d-9cd1-77fdd4a2ebc0 --workers 1 --loaded-duration-minutes 2 --output-dir run1 --overwrite-output
 ```
 
 Change the output directory and number of workers and run it again: 
 
 ```bash
-java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/ --workers 5 --loaded-duration-minutes 2 --output-dir run2 --overwrite-output
+java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://staging.colorado.posit.co/rsc/content/837525f0-b7f7-4c6d-9cd1-77fdd4a2ebc0 --workers 3 --loaded-duration-minutes 2 --output-dir run3 --overwrite-output
+```
+
+```bash
+java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://staging.colorado.posit.co/rsc/content/837525f0-b7f7-4c6d-9cd1-77fdd4a2ebc0 --workers 7 --loaded-duration-minutes 2 --output-dir run7 --overwrite-output
 ```
 
 Alternatively we could pass in the command from R using the `system()` command: 
@@ -114,7 +123,7 @@ system(
     )
 )
 
-target_url <- "https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/"
+target_url <- "https://staging.colorado.posit.co/rsc/content/837525f0-b7f7-4c6d-9cd1-77fdd4a2ebc0"
 workers <- 1
 dir <- "run1"
 system(
@@ -124,6 +133,11 @@ system(
   )
 )
 ```
+
+Note that if you are getting a bunch of latency these notes will be useful: 
+
+ - <https://rstudio.github.io/shinyloadtest/articles/limitations-of-shinyloadtest.html>
+ - <https://github.com/rstudio/shinyloadtest/issues/121>
 
 
 ## Analyzing the results 
@@ -136,8 +150,8 @@ library(dplyr)
 
 df <- load_runs(
   `1 user` = "run1",
-  `5 users` = "run2"#,
-  #`15 users` = "run3"
+  `3 users` = "run3",
+  `7 users` = "run7"
 )
 
 shinyloadtest_report(df, "report.html")
