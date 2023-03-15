@@ -22,6 +22,8 @@ knitr::opts_chunk$set(echo = TRUE)
  - Installing shinycannon: <https://rstudio.github.io/shinyloadtest/articles/shinycannon.html#installation>
  - Analyzing the results: <https://rstudio.github.io/shinyloadtest/articles/analyzing-load-test-logs.html> 
 
+Internal reference: <https://rstudioide.zendesk.com/agent/tickets/86733> 
+
 ## Secret management 
 
 The Connect API key is stored as the r environment variable `connect_api_key`. It can be edited/modified using the usethis package with: 
