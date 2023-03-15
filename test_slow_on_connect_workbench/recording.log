@@ -2,22 +2,3 @@
 # target_url: https://colorado.posit.co/rsc/content/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/
 # target_type: RStudio Server Connect
 # rscApiKeyRequired: true
-{"type":"REQ_HOME","begin":"2023-02-21T18:30:34.433Z","end":"2023-02-21T18:30:42.637Z","status":200,"url":"/"}
-{"type":"REQ_GET","begin":"2023-02-21T18:30:42.777Z","end":"2023-02-21T18:30:43.011Z","status":200,"url":"/_w_${WORKER}/shared/jquery.min.js"}
-{"type":"REQ_GET","begin":"2023-02-21T18:30:43.023Z","end":"2023-02-21T18:30:43.282Z","status":200,"url":"/_w_${WORKER}/shared/shiny.min.css"}
-{"type":"REQ_GET","begin":"2023-02-21T18:30:43.297Z","end":"2023-02-21T18:30:43.557Z","status":200,"url":"/_w_${WORKER}/shared/bootstrap/css/bootstrap.min.css"}
-{"type":"REQ_GET","begin":"2023-02-21T18:30:43.572Z","end":"2023-02-21T18:30:43.865Z","status":200,"url":"/_w_${WORKER}/shared/shiny.min.js"}
-{"type":"REQ_GET","begin":"2023-02-21T18:30:43.879Z","end":"2023-02-21T18:30:44.137Z","status":200,"url":"/_w_${WORKER}/__assets__/rstudio-connect.css"}
-{"type":"REQ_GET","begin":"2023-02-21T18:30:44.147Z","end":"2023-02-21T18:30:44.389Z","status":200,"url":"/_w_${WORKER}/shared/bootstrap/accessibility/css/bootstrap-accessibility.min.css"}
-{"type":"REQ_GET","begin":"2023-02-21T18:30:44.421Z","end":"2023-02-21T18:30:44.684Z","status":200,"url":"/_w_${WORKER}/shared/bootstrap/js/bootstrap.min.js"}
-{"type":"REQ_GET","begin":"2023-02-21T18:30:44.697Z","end":"2023-02-21T18:30:44.880Z","status":200,"url":"/_w_${WORKER}/shared/bootstrap/accessibility/js/bootstrap-accessibility.min.js"}
-{"type":"REQ_GET","begin":"2023-02-21T18:30:44.891Z","end":"2023-02-21T18:30:45.130Z","status":200,"url":"/_w_${WORKER}/__assets__/sockjs.min.js"}
-{"type":"REQ_GET","begin":"2023-02-21T18:30:45.139Z","end":"2023-02-21T18:30:45.343Z","status":200,"url":"/_w_${WORKER}/__assets__/shiny-server-client.min.js"}
-{"type":"REQ_TOK","begin":"2023-02-21T18:30:45.636Z","end":"2023-02-21T18:30:45.786Z","status":200,"url":"/_w_${WORKER}/__token__?_=1677004243348"}
-{"type":"REQ_SINF","begin":"2023-02-21T18:30:45.870Z","end":"2023-02-21T18:30:46.073Z","status":200,"url":"/__sockjs__/n=${ROBUST_ID}/t=${TOKEN}/w=${WORKER}/s=0/info?t=1677004245994"}
-{"type":"WS_OPEN","begin":"2023-02-21T18:30:47.083Z","url":"/__sockjs__/n=${ROBUST_ID}/t=${TOKEN}/w=${WORKER}/s=0/${SOCKJSID}/websocket"}
-{"type":"WS_RECV","begin":"2023-02-21T18:30:47.307Z","message":"o"}
-{"type":"WS_RECV","begin":"2023-02-21T18:30:47.356Z","message":"c[4704,\"No such token.\"]"}
-{"type":"WS_SEND","begin":"2023-02-21T18:30:47.369Z","message":"[\"0#0|o|\"]"}
-{"type":"WS_SEND","begin":"2023-02-21T18:30:47.414Z","message":"[\"1#0|m|{\\\"method\\\":\\\"init\\\",\\\"data\\\":{\\\"X:shiny.number\\\":1,\\\"Y:shiny.number\\\":1,\\\"mu:shiny.number\\\":1,\\\".clientdata_output_brussels_width\\\":842,\\\".clientdata_output_brussels_height\\\":400,\\\".clientdata_output_brussels_bg\\\":\\\"rgb(255, 255, 255)\\\",\\\".clientdata_output_brussels_fg\\\":\\\"rgb(51, 51, 51)\\\",\\\".clientdata_output_brussels_accent\\\":\\\"rgb(51, 122, 183)\\\",\\\".clientdata_output_brussels_font\\\":{\\\"families\\\":[\\\"Helvetica Neue\\\",\\\"Helvetica\\\",\\\"Arial\\\",\\\"sans-serif\\\"],\\\"size\\\":\\\"14px\\\"},\\\".clientdata_output_brussels_hidden\\\":false,\\\".clientdata_pixelratio\\\":1.1,\\\".clientdata_url_protocol\\\":\\\"https:\\\",\\\".clientdata_url_hostname\\\":\\\"colorado.posit.co\\\",\\\".clientdata_url_port\\\":\\\"\\\",\\\".clientdata_url_pathname\\\":\\\"/rstudio/s/caff8fecd3f65998e90bf/p/73c25d7d/\\\",\\\".clientdata_url_search\\\":\\\"\\\",\\\".clientdata_url_hash_initial\\\":\\\"\\\",\\\".clientdata_url_hash\\\":\\\"\\\",\\\".clientdata_singletons\\\":\\\"\\\"}}\"]"}
-{"type":"WS_CLOSE","begin":"2023-02-21T18:30:47.419Z"}

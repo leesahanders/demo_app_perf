@@ -7,7 +7,7 @@
 <link href="app_perf_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="app_perf_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="app_perf_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.0.36">
+  <meta name="generator" content="quarto-1.2.269">
 
   <meta name="author" content="Posit Solutions Engineering (Lisa Anders)">
   <title>Improving app performance with profvis</title>
@@ -19,10 +19,15 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -382,15 +387,24 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="center">
+<section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Improving app performance with profvis</h1>
-  <p class="author">Posit Solutions Engineering (Lisa Anders)</p>
-  <p class="institute">Posit, PBC</p>
-</section>
 
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Posit Solutions Engineering (Lisa Anders) 
+</div>
+        <p class="quarto-title-affiliation">
+            Posit, PBC
+          </p>
+    </div>
+</div>
+
+</section>
 <section class="slide level2">
 
-<h3 class="smaller" id="why-you-should-be-using-profvis">Why you should be using profvis</h3>
+<h3 class="smaller" id="why-you-should-be-load-testing">Why you should be load testing</h3>
 <ul>
 <li>You want to know what to prioritize to improve your application</li>
 <li>Often what’s holding your application back isn’t intuitive</li>
@@ -516,8 +530,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="load-testing-1" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Load testing</h2>
+<section id="load-testing-overview" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Load testing Overview</h2>
 <p><font size="5"></font></p><font size="5">
 <div class="quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -531,25 +545,119 @@
 </div>
 <p>The steps:</p>
 <ul>
-<li>Record a typical user session for the app.</li>
+<li>Part 1: Record a typical user session for the app.</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>shinyloadtest<span class="sc">::</span><span class="fu">record_session</span>(<span class="st">'https://shinyapp.example.com/'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li>Replay the session in parallel, simulating many simultaneous users accessing the app.</li>
+<li>Part 2: Replay the session in parallel, simulating many simultaneous users accessing the app.</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>shinycannon recording.log https<span class="sc">:</span><span class="er">//</span>shinyapp.example.com<span class="sc">/</span> <span class="sc">--</span>workers <span class="dv">5</span> <span class="sc">--</span>loaded<span class="sc">-</span>duration<span class="sc">-</span>minutes <span class="dv">2</span> <span class="sc">--</span>output<span class="sc">-</span>dir run1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li>Analyze the results of the load test and determine if the app performed well enough.</li>
+<li>Part 3: Analyze the results of the load test and determine if the app performed well enough.</li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>df <span class="ot">&lt;-</span> shinyloadtest<span class="sc">::</span><span class="fu">load_runs</span>(<span class="st">"run1"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2"></a>shinyloadtest<span class="sc">::</span><span class="fu">shinyloadtest_report</span>(df, <span class="st">"run1.html"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s look, in more detail, at running this from Workbench for apps deployed to Connect.</p>
 <div class="footer">
 <p>Learn more: <a href="https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html">shinyloadtest</a></p>
 </div>
 </font><p><font size="5"></font></p>
 </section>
-<section id="load-testing-2" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Load testing</h2>
+<section id="part-1-user-recording" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Part 1: User Recording</h2>
+<p><font size="5"></font></p><font size="5">
+<p>The Connect API key is stored as the r environment variable <code>connect_api_key</code>. It can be edited/modified using the usethis package with:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(usethis)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>usethis<span class="sc">::</span><span class="fu">edit_r_environ</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Create “Recording” of a typical user’s interaction</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">library</span>(shinyloadtest)</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>shinyloadtest<span class="sc">::</span><span class="fu">record_session</span>(</span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="at">target_app_url=</span><span class="st">'https://colorado.posit.co/rsc/content/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/'</span>, </span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="at">connect_api_key=</span><span class="fu">Sys.getenv</span>(<span class="st">"CONNECT_API_KEY"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Use the URL for the app from the “open solo” mode on Connect.</p>
+<ul>
+<li>Solo mode is important. For example, this URL, when opened with developer options, doesn’t work: <a href="https://colorado.posit.co/rsc/connect/#/apps/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/access" class="uri">https://colorado.posit.co/rsc/connect/#/apps/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/access</a></li>
+</ul>
+<p>Alternatively, we can programmatically create the recording using <a href="https://rstudio.github.io/shinytest2/articles/use-application-audit.html?q=load%20test#load-testing-with-shinytest2">shinytest2</a>.</p>
+<div class="footer">
+<p>Learn more: <a href="https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html">shinyloadtest</a></p>
+</div>
+</font><p><font size="5"></font></p>
+</section>
+<section id="part-2-load-testing-install-shinycannon" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Part 2: Load testing, install Shinycannon</h2>
+<p><font size="5"></font></p><font size="5">
+<p>Set the env variable for the connect api key in your terminal with (note that <code>set</code> is used in windows, <code>export</code> for mac or linux). Do this in terminal (after adding your API key).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="bu">export</span> <span class="va">SHINYCANNON_CONNECT_API_KEY</span><span class="op">=&lt;</span>add your key here<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Verify that it was set (note that %% is used in windows, $ in linux).</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="bu">echo</span> <span class="va">$SHINYCANNON_CONNECT_API_KEY</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><a href="https://rstudio.github.io/shinyloadtest/articles/shinycannon.html">Shinycannon installation</a> is optional on Linux, the jar file can be called directly (useful in organizations where system installation is restricted for security reasons).</p>
+<p>Test that shinycannon works by calling the help documentation with:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="bu">cd</span> test</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="ex">java</span> <span class="at">-jar</span> shinycannon-1.1.3-dd43f6b.jar <span class="at">-h</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="footer">
+<p>Learn more: <a href="https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html">shinyloadtest</a></p>
+</div>
+</font><p><font size="5"></font></p>
+</section>
+<section id="part-2-load-testing-continued" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Part 2: Load testing, continued</h2>
+<p><font size="5"></font></p><font size="5">
+<p>We will run the load test for simulating the number of simultaneous users, each time saving the results to a different folder:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">java</span> <span class="at">-jar</span> shinycannon-1.1.3-dd43f6b.jar recording.log https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/ <span class="at">--workers</span> 1 <span class="at">--loaded-duration-minutes</span> 2 <span class="at">--output-dir</span> run1 <span class="at">--overwrite-output</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="ex">java</span> <span class="at">-jar</span> shinycannon-1.1.3-dd43f6b.jar recording.log https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/ <span class="at">--workers</span> 5 <span class="at">--loaded-duration-minutes</span> 2 <span class="at">--output-dir</span> run2 <span class="at">--overwrite-output</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Alternatively we could pass in the command from R using the <code>system()</code> command, for example:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>connect_api_key <span class="ot">=</span> <span class="fu">Sys.getenv</span>(<span class="st">"CONNECT_API_KEY"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2"></a></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="fu">system</span>(</span>
+<span id="cb11-4"><a href="#cb11-4"></a>  <span class="fu">sprintf</span>(</span>
+<span id="cb11-5"><a href="#cb11-5"></a>    <span class="co"># "set SHINYCANNON_CONNECT_API_KEY=", #Change to this if you are running on Windows</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>     <span class="st">"export SHINYCANNON_CONNECT_API_KEY="</span>,</span>
+<span id="cb11-7"><a href="#cb11-7"></a>    connect_api_key</span>
+<span id="cb11-8"><a href="#cb11-8"></a>    )</span>
+<span id="cb11-9"><a href="#cb11-9"></a>)</span>
+<span id="cb11-10"><a href="#cb11-10"></a></span>
+<span id="cb11-11"><a href="#cb11-11"></a>target_url <span class="ot">&lt;-</span> <span class="st">"https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/"</span></span>
+<span id="cb11-12"><a href="#cb11-12"></a>workers <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb11-13"><a href="#cb11-13"></a>dir <span class="ot">&lt;-</span> <span class="st">"run1"</span></span>
+<span id="cb11-14"><a href="#cb11-14"></a><span class="fu">system</span>(</span>
+<span id="cb11-15"><a href="#cb11-15"></a>  <span class="fu">sprintf</span>(</span>
+<span id="cb11-16"><a href="#cb11-16"></a>    <span class="st">"java -jar shinycannon-1.1.3-dd43f6b.jar recording.log %s --workers %s --loaded-duration-minutes 2 --output-dir %s --overwrite-output"</span>,</span>
+<span id="cb11-17"><a href="#cb11-17"></a>    target_url, workers, dir</span>
+<span id="cb11-18"><a href="#cb11-18"></a>  )</span>
+<span id="cb11-19"><a href="#cb11-19"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="footer">
+<p>Learn more: <a href="https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html">shinyloadtest</a></p>
+</div>
+</font><p><font size="5"></font></p>
+</section>
+<section id="part-3-analyze-the-results" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Part 3: Analyze the results</h2>
+<p><font size="5"></font></p><font size="5">
+<p>Reference the documentation to understand the different charts: <a href="https://rstudio.github.io/shinyloadtest/articles/analyzing-load-test-logs.html?q=output#report-output" class="uri">https://rstudio.github.io/shinyloadtest/articles/analyzing-load-test-logs.html?q=output#report-output</a></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb12-1" class="hljs-ln-code"><a href="#cb12-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb12-2" class="hljs-ln-code"><a href="#cb12-2"></a></span>
+<span id="cb12-3" class="hljs-ln-code"><a href="#cb12-3"></a>df <span class="ot">&lt;-</span> <span class="fu">load_runs</span>(</span>
+<span id="cb12-4" class="hljs-ln-code"><a href="#cb12-4"></a>  <span class="st">`</span><span class="at">1 user</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"run1"</span>,</span>
+<span id="cb12-5" class="hljs-ln-code"><a href="#cb12-5"></a>  <span class="st">`</span><span class="at">5 users</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"run2"</span></span>
+<span id="cb12-6" class="hljs-ln-code"><a href="#cb12-6"></a>)</span>
+<span id="cb12-7" class="hljs-ln-code"><a href="#cb12-7"></a></span>
+<span id="cb12-8" class="hljs-ln-code"><a href="#cb12-8"></a><span class="fu">shinyloadtest_report</span>(df, <span class="st">"report.html"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Notes:</p>
+<ul>
+<li>RMarkdown and various dependencies will need to be installed.</li>
+<li>After running this, depending on your organizations security policies, it may help to open as a “preview” rather than in web browser (the error message will be something like “CORS restricted”).</li>
+<li>It may also be helpful to set self_contained = TRUE, or self_container = FALSE depending on any error messages encountered.</li>
+</ul>
+<div class="footer">
+<p>Learn more: <a href="https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html">shinyloadtest</a></p>
+</div>
+</font><p><font size="5"></font></p>
+</section>
+<section id="load-testing-output" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Load testing output</h2>
 <p><font size="6"></font></p><font size="6">
 <div class="quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -563,6 +671,29 @@
 </div>
 <center>
 <p><img data-src="https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png" style="width:70.0%"></p>
+<div class="citation" style="font-size: 16px">
+<p>For more information refer to <a href="https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html">shinyloadtest</a></p>
+</div>
+</center>
+</font><p><font size="6"></font></p>
+</section>
+<section id="load-testing-output-impact-on-session-duration" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Load testing output: Impact on session duration</h2>
+<p><font size="6"></font></p><font size="6">
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 9.1%;justify-content: center;">
+<p><img data-src="https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png" width="70"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 90.9%;justify-content: center;">
+<p><strong>shinyloadtest</strong> - Load testing helps developers and administrators estimate how many users their application can support.</p>
+</div>
+</div>
+</div>
+<center>
+<p><img data-src="https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png" style="width:70.0%"></p>
+<!-- <left>![](images/rmarkdown_default.png){width="50%"}</left> -->
+<!-- <right>![](images/rmarkdown_blastula.png){width="50%"}</right> -->
 <div class="citation" style="font-size: 16px">
 <p>For more information refer to <a href="https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html">shinyloadtest</a></p>
 </div>
@@ -641,8 +772,8 @@
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-<p><img src="images/posit-logo-black-TM.png" class="slide-logo"></p>
-<div class="footer footer-default">
+
+<img src="images/posit-logo-black-TM.png" class="slide-logo r-stretch"><div class="footer footer-default">
 <p><a href="http://solutions.rstudio.com/" class="uri">http://solutions.rstudio.com/</a></p>
 </div>
 </section></section>
@@ -898,7 +1029,24 @@
         button.classList.add('code-copy-button-checked');
         var currentTitle = button.getAttribute("title");
         button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
         setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
           button.setAttribute("title", currentTitle);
           button.classList.remove('code-copy-button-checked');
         }, 1000);
@@ -928,31 +1076,50 @@
       for (var i=0; i<noterefs.length; i++) {
         const ref = noterefs[i];
         tippyHover(ref, function() {
-          let href = ref.getAttribute('href');
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
           return note.innerHTML;
         });
       }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
       var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
       for (var i=0; i<bibliorefs.length; i++) {
         const ref = bibliorefs[i];
-        const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-        tippyHover(ref, function() {
-          var popup = window.document.createElement('div');
-          cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
-            }
-            popup.appendChild(citeDiv);
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
           });
-          return popup.innerHTML;
-        });
+        }
       }
     });
     </script>

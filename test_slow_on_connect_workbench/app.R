@@ -2,7 +2,7 @@ library(shiny)
 library(deSolve)
 
 van_der_pol <- function(t, y, mu) {
-  Sys.sleep(.5)
+  Sys.sleep(1.5) # This simulates a long running function
   d_x <- y[2]
   d_y <- mu * (1 - y[1]^2) * y[2] - y[1]
   list(c(X = d_x, Y = d_y))

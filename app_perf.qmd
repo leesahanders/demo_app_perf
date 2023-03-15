@@ -10,13 +10,13 @@ format:
     footer: <http://solutions.rstudio.com/>
     slide-number: true
     preview-links: auto
-editor: visual
+editor: source
 ---
 
-### Why you should be using profvis {.smaller}
+### Why you should be load testing {.smaller}
 
-- You want to know what to prioritize to improve your application
-- Often what's holding your application back isn't intuitive
+-   You want to know what to prioritize to improve your application
+-   Often what's holding your application back isn't intuitive
 
 <center>
 
@@ -29,27 +29,24 @@ editor: visual
 </center>
 
 ::: notes
-
 -   Investigate server performance issues
 -   Profiling (and load testing)
--   Runtime settings 
+-   Runtime settings
 -   Improve data handling (cacheing, storage)
 -   Consider async
-
 :::
 
 ## Profiling {auto-animate="true"}
 
-<font size="6"> 
+<font size="6">
 
-Profile apps to understand where it is spending the bulk of its time. Oftentimes the result is surprising and may point at the issue being a specific function or command rather than needing an overhaul of the app itself or changing how it is running on the server. 
+Profile apps to understand where it is spending the bulk of its time. Oftentimes the result is surprising and may point at the issue being a specific function or command rather than needing an overhaul of the app itself or changing how it is running on the server.
 
 ::: {layout="[2, 20]"}
 ![](https://support.posit.co/hc/en-us/article_attachments/206191538/Screen_Shot_2016-04-04_at_2.09.15_PM.png){width="70"}
 
-**profvis** - Profvis is a tool for helping you to understand how R spends its time. 
+**profvis** - Profvis is a tool for helping you to understand how R spends its time.
 :::
-
 
 ``` r
 library(profvis)
@@ -75,7 +72,7 @@ Learn more: [profvis](https://rstudio.github.io/profvis/index.html)
 
 ## Profiling
 
-<font size="6"> 
+<font size="6">
 
 <center>
 
@@ -87,31 +84,27 @@ For more information refer to [the support article](https://rstudio.github.io/pr
 
 </center>
 
-</font> 
+</font>
 
 ::: notes
-On top is the code, and on the bottom is a flame graph. In the flame graph, the horizontal direction represents time in milliseconds, and the vertical direction represents the call stack. Looking at the bottom-most items on the stack, most of the time, about 2 seconds, is spent in plot, and then a much smaller amount of time is spent in lm, and almost no time at all is spent in abline – it doesn’t even show up on the flame graph.
+On top is the code, and on the bottom is a flame graph. In the flame graph, the horizontal direction represents time in milliseconds, and the vertical direction represents the call stack. Looking at the bottom-most items on the stack, most of the time, about 2 seconds, is spent in plot, and then a much smaller amount of time is spent in lm, and almost no time at all is spent in abline -- it doesn't even show up on the flame graph.
 
 Each block in the flame graph represents a call to a function, or possibly multiple calls to the same function. The width of the block is proportional to the amount of time spent in that function. When a function calls another function, another block is added on top of it in the flame graph.
 
-The profiling data has some limitations: some internal R functions don’t show up in the flame graph, and it offers no insight into code that’s implemented in languages other than R (e.g. C, C++, or Fortran).
+The profiling data has some limitations: some internal R functions don't show up in the flame graph, and it offers no insight into code that's implemented in languages other than R (e.g. C, C++, or Fortran).
 :::
-
 
 ## Load testing {auto-animate="true"}
 
-<font size="6"> 
+<font size="6">
 
-Using [load testing](https://docs.rstudio.com/connect/user/shiny/#load-testing) with profiling grants a very granular view of where the performance issues are happening. Oftenlower usage apps may appear to have great performance, only to struggle as more users access that piece of content due to multiple users sharing the same R or Python process. 
+Using [load testing](https://docs.rstudio.com/connect/user/shiny/#load-testing) with profiling grants a very granular view of where the performance issues are happening. Oftenlower usage apps may appear to have great performance, only to struggle as more users access that piece of content due to multiple users sharing the same R or Python process.
 
 ::: {layout="[2, 20]"}
 ![](https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png){width="70"}
 
-
-
 **shinyloadtest** - Load testing helps developers and administrators estimate how many users their application can support.
 :::
-
 
 ::: footer
 Learn more: [shinyloadtest](https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html)
@@ -120,16 +113,16 @@ Learn more: [shinyloadtest](https://rstudio.github.io/shinyloadtest/articles/loa
 </font>
 
 ::: notes
-The steps: 
+The steps:
 
-- Record a typical user session for the app.
-- Replay the session in parallel, simulating many simultaneous users accessing the app.
-- Analyze the results of the load test and determine if the app performed well enough.
+-   Record a typical user session for the app.
+-   Replay the session in parallel, simulating many simultaneous users accessing the app.
+-   Analyze the results of the load test and determine if the app performed well enough.
 :::
 
-## Load testing {auto-animate="true"}
+## Load testing Overview {auto-animate="true"}
 
-<font size="5"> 
+<font size="5">
 
 ::: {layout="[2, 20]"}
 ![](https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png){width="70"}
@@ -137,27 +130,29 @@ The steps:
 **shinyloadtest** - Load testing helps developers and administrators estimate how many users their application can support.
 :::
 
-The steps: 
+The steps:
 
-- Record a typical user session for the app.
+-   Part 1: Record a typical user session for the app.
 
 ``` r
 shinyloadtest::record_session('https://shinyapp.example.com/')
 ```
 
-- Replay the session in parallel, simulating many simultaneous users accessing the app.
+-   Part 2: Replay the session in parallel, simulating many simultaneous users accessing the app.
 
 ``` r
 shinycannon recording.log https://shinyapp.example.com/ --workers 5 --loaded-duration-minutes 2 --output-dir run1
 ```
 
-- Analyze the results of the load test and determine if the app performed well enough.
+-   Part 3: Analyze the results of the load test and determine if the app performed well enough.
 
 ``` r
 df <- shinyloadtest::load_runs("run1")
 shinyloadtest::shinyloadtest_report(df, "run1.html")
 ```
 
+Let's look, in more detail, at running this from Workbench for apps deployed to Connect. 
+
 ::: footer
 Learn more: [shinyloadtest](https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html)
 :::
@@ -165,15 +160,142 @@ Learn more: [shinyloadtest](https://rstudio.github.io/shinyloadtest/articles/loa
 </font>
 
 
-## Load testing {auto-animate="true"}
+## Part 1:  User Recording {auto-animate="true"}
 
-<font size="6"> 
+<font size="5">
 
-::: {layout="[2, 20]"}
-![](https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png){width="70"}
+The Connect API key is stored as the r environment variable `connect_api_key`. It can be edited/modified using the `usethis` package with: 
+```r
+library(usethis)
+usethis::edit_r_environ()
+```
 
-**shinyloadtest** - Load testing helps developers and administrators estimate how many users their application can support.
+Create "Recording" of a typical user's interaction
+```r
+library(shinyloadtest)
+
+shinyloadtest::record_session(
+  target_app_url='https://colorado.posit.co/rsc/content/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/', 
+  connect_api_key=Sys.getenv("CONNECT_API_KEY"))
+```
+
+Use the URL for the app from the "open solo" mode on Connect.  
+
+ - Solo mode is important. For example, this URL, when opened with developer options, doesn't work: <https://colorado.posit.co/rsc/connect/#/apps/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/access>
+
+Alternatively, we can programmatically create the recording using [shinytest2](https://rstudio.github.io/shinytest2/articles/use-application-audit.html?q=load%20test#load-testing-with-shinytest2).  
+ 
+::: footer
+Learn more: [shinyloadtest](https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html)
 :::
+
+</font>
+
+## Part 2: Load testing, install Shinycannon {auto-animate="true"}
+
+<font size="5">
+
+Set the env variable for the connect api key in your terminal with (note that `set` is used in windows, `export` for mac or linux). Do this in terminal (after adding your API key). 
+
+```bash
+export SHINYCANNON_CONNECT_API_KEY=<add your key here>
+```
+
+Verify that it was set (note that %% is used in windows, $ in linux). 
+
+```bash
+echo $SHINYCANNON_CONNECT_API_KEY
+```
+
+[Shinycannon installation](https://rstudio.github.io/shinyloadtest/articles/shinycannon.html) is optional on Linux, the jar file can  be called directly (useful in organizations where system installation is restricted for security reasons). 
+
+Test that shinycannon works by calling the help documentation with: 
+
+```bash
+cd test
+java -jar shinycannon-1.1.3-dd43f6b.jar -h
+```
+
+::: footer
+Learn more: [shinyloadtest](https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html)
+:::
+
+</font>
+
+## Part 2: Load testing, continued {auto-animate="true"}
+
+<font size="5">
+
+We will run the load test for simulating the number of simultaneous users, each time saving the results to a different folder:  
+
+```bash
+java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/ --workers 1 --loaded-duration-minutes 2 --output-dir run1 --overwrite-output
+
+java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/ --workers 5 --loaded-duration-minutes 2 --output-dir run2 --overwrite-output
+```
+
+Alternatively we could pass in the command from R using the `system()` command, for example: 
+
+```r
+connect_api_key = Sys.getenv("CONNECT_API_KEY")
+
+system(
+  sprintf(
+    # "set SHINYCANNON_CONNECT_API_KEY=", #Change to this if you are running on Windows
+     "export SHINYCANNON_CONNECT_API_KEY=",
+    connect_api_key
+    )
+)
+
+target_url <- "https://colorado.posit.co/rsc/content/d2c40c48-ae0b-48d8-888a-e8626322565d/"
+workers <- 1
+dir <- "run1"
+system(
+  sprintf(
+    "java -jar shinycannon-1.1.3-dd43f6b.jar recording.log %s --workers %s --loaded-duration-minutes 2 --output-dir %s --overwrite-output",
+    target_url, workers, dir
+  )
+)
+```
+
+::: footer
+Learn more: [shinyloadtest](https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html)
+:::
+
+</font>
+
+## Part 3: Analyze the results {auto-animate="true"}
+
+<font size="5">
+
+Reference the documentation to understand the different charts: <https://rstudio.github.io/shinyloadtest/articles/analyzing-load-test-logs.html?q=output#report-output> 
+
+```r
+library(dplyr)
+
+df <- load_runs(
+  `1 user` = "run1",
+  `5 users` = "run2"
+)
+
+shinyloadtest_report(df, "report.html")
+
+```
+Notes: 
+
+ - RMarkdown and various dependencies will need to be installed. 
+ - After running this, depending on your organizations security policies, it may help to open as a "preview" rather than in web browser (the error message will be something like "CORS restricted"). 
+ - It may also be helpful to set self_contained = TRUE, or self_container = FALSE depending on any error messages encountered. 
+
+::: footer
+Learn more: [shinyloadtest](https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html)
+:::
+
+</font>
+
+## Load testing output {auto-animate="true"}
+
+<font size="6">
 
 <center>
 
@@ -187,47 +309,67 @@ For more information refer to [shinyloadtest](https://rstudio.github.io/shinyloa
 
 </font>
 
+## Load testing output: Impact on session duration {auto-animate="true"}
 
-## What about Python? 
+<font size="6">
 
-- Python profiling tool: <https://jiffyclub.github.io/snakeviz/>
-- Python load testing tool: <https://locust.io/>
+<!-- ::: {layout="[2, 20]"} -->
+<!-- ![](https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png){width="70"} -->
 
-## Where to go from here?  
+<!-- **shinyloadtest** - Load testing helps developers and administrators estimate how many users their application can support. -->
+<!-- ::: -->
 
-- [Shiny in Production by Kelly O'Briant](https://kellobri.github.io/shiny-prod-book/scaling.html)
-- [Cran whales](https://rstudio.github.io/promises/articles/casestudy.html)
-- [Cran whales talk](https://www.youtube.com/watch?v=Wy3TY0gOmJw)
-- [Cran whales article](https://cran.r-project.org/web/packages/promises/vignettes/casestudy.html)
-- [Profiling in RStudio](https://support.posit.co/hc/en-us/articles/218221837-Profiling-with-RStudio)
+<center>
 
+![](https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png){width="70%"}
+
+<!-- <left>![](images/rmarkdown_default.png){width="50%"}</left> -->
+<!-- <right>![](images/rmarkdown_blastula.png){width="50%"}</right> -->
+
+::: {.citation style="font-size: 16px"}
+For more information refer to [shinyloadtest](https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html)
+:::
+
+</center>
+
+</font>
+
+## What about Python?
+
+-   Python profiling tool: <https://jiffyclub.github.io/snakeviz/>
+-   Python load testing tool: <https://locust.io/>
+
+## Where to go from here?
+
+-   [Shiny in Production by Kelly O'Briant](https://kellobri.github.io/shiny-prod-book/scaling.html)
+-   [Cran whales](https://rstudio.github.io/promises/articles/casestudy.html)
+-   [Cran whales talk](https://www.youtube.com/watch?v=Wy3TY0gOmJw)
+-   [Cran whales article](https://cran.r-project.org/web/packages/promises/vignettes/casestudy.html)
+-   [Profiling in RStudio](https://support.posit.co/hc/en-us/articles/218221837-Profiling-with-RStudio)
 
 # Optional/Backup {.smaller}
 
 # Data best practices {.smaller}
 
-Apply data best practices and see if that improves performance:  
+Apply data best practices and see if that improves performance:
 
- - Pull data on a scheduler
- - Reducing the data being loaded 
- - Selecting a faster data storage system, for example by [pinning arrow files](https://pins.rstudio.com/articles/pins.html?q=arrow#reading-and-writing-data)
- - Utilize [cacheing](https://docs.rstudio.com/connect/user/shiny/#caching)
-
+-   Pull data on a scheduler
+-   Reducing the data being loaded
+-   Selecting a faster data storage system, for example by [pinning arrow files](https://pins.rstudio.com/articles/pins.html?q=arrow#reading-and-writing-data)
+-   Utilize [cacheing](https://docs.rstudio.com/connect/user/shiny/#caching)
 
 # Async {.smaller}
 
-As a last resort we can consider async. 
+As a last resort we can consider async.
 
-In general, async is only useful when there are specific steps that take a long time to run, since that will free up the process to service other users. Usually async is saved as a last resort because it is usually the most challenging to implement. 
+In general, async is only useful when there are specific steps that take a long time to run, since that will free up the process to service other users. Usually async is saved as a last resort because it is usually the most challenging to implement.
 
- - [Improving scalability with async programming in R](https://shiny.rstudio.com/articles/async.html)
- - [Improving scalability with async programming in Python](https://shiny.rstudio.com/articles/async.html)
+-   [Improving scalability with async programming in R](https://shiny.rstudio.com/articles/async.html)
+-   [Improving scalability with async programming in Python](https://shiny.rstudio.com/articles/async.html)
 
-When using async, encouraging developers to include additional debug messages, for example with [log4r in R](https://github.com/johnmyleswhite/log4r), is particularly important. This will allow developers to trace back errors to the session and connection. 
+When using async, encouraging developers to include additional debug messages, for example with [log4r in R](https://github.com/johnmyleswhite/log4r), is particularly important. This will allow developers to trace back errors to the session and connection.
 
-
-
-## When to know it's a real server issue  {.smaller}
+## When to know it's a real server issue {.smaller}
 
 Ask the questions:
 
@@ -243,6 +385,4 @@ Use the tools:
 -   Reclaim space by [reducing the number of bundles stored on the server](https://docs.rstudio.com/connect/admin/content-management/#bundle-management)
 
 ::: notes
-
 :::
-
