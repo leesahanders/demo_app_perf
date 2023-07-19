@@ -76,6 +76,11 @@ Windows:
 ```bash
 set SHINYCANNON_CONNECT_API_KEY=<add your key here>
 set SHINYCANNON_CONNECT_URL=<add your content URL here>
+
+set SHINYCANNON_CONNECT_API_KEY=r6xWXQigVVFUAcUPH0mwBnFK6ejt3qpi
+set SHINYCANNON_CONNECT_URL=https://colorado.posit.co/rsc/content/e297c186-e1a2-4afe-8abb-3edb52621559
+
+
 ```
 
 Linux: 
