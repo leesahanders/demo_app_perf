@@ -1,0 +1,288 @@
+---
+title: "Run Shiny Tests"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: cerulean
+date: "2023-08-22"
+resource_files:
+- shinytest/app/app.R
+- shinytest/tests/testthat.R
+- "shinytest/tests/testthat/test-shinytest2.R"
+- "shinytest/tests/testthat/setup-shinytest2.R"
+- "shinytest/tests/testthat/_snaps/linux-4.3/shinytest2/shinytest-002.png"
+- "shinytest/tests/testthat/_snaps/linux-4.3/shinytest2/shinytest-001_.png"
+- "shinytest/tests/testthat/_snaps/linux-4.3/shinytest2/shinytest-001.json"
+- app/tests/testthat.R
+- "app/tests/testthat/setup-shinytest2.R"
+- "app/tests/testthat/test-shinytest2.R"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# **Introduction**
+The aim of this document is to demonstrate automated Shiny App testing using shinytest2, POSIT & pins.
+Our CPV shiny apps can be tested on a regular cadence.
+The CPV team can be notified of CPV ecosystem issues automatically instead of CPV users raising issues.
+Automatic Shiny app tests ensure our apps are robust and give our customers confidence in our solutions. 
+
+# Lisa
+
+```{r}
+#setwd("/usr/home/lisa.anders/Demo/demo_app_perf/testing_for_customer/Shiny Test POC/")
+#For deploying the Rmd: 
+#setwd("/usr/home/lisa.anders/Demo/demo_app_perf/testing_for_customer/Shiny Test POC/shinytest")
+#rsconnect::writeManifest()
+#For deploying the app.R: 
+#setwd("/usr/home/lisa.anders/Demo/demo_app_perf/testing_for_customer/Shiny Test POC/shinytest/app")
+#rsconnect::writeManifest()
+
+library(shinytest2)
+library(kableExtra)
+
+print(getwd())
+```
+
+## Secret management 
+
+The Connect API key is stored as the r environment variable `connect_api_key`. It can be edited/modified using the usethis package with: 
+```r
+library(usethis)
+usethis::edit_r_environ()
+```
+
+## Create tests (optional)
+
+```{r}
+#shinytest2::use_shinytest2("https://colorado.posit.co/rsc/content/72804973-8e3e-468a-9642-12e3f3e38e26", setup = TRUE)
+```
+
+
+## Run tests, save result, using local app.R file
+
+Directory structure: 
+
+- Shiny Test POC
+ - shinytest 
+  - app
+   - app.R
+   - tests
+    - testthat.R
+    - testthat 
+     - setup-shinytest2.R
+     - test-shinytest2.R
+  - Shinytest2-Markdown-POC.Rmd
+
+```{r}
+test_res<-shinytest2::test_app("./app/app.R")
+
+kable(test_res) %>% 
+  kable_styling(font_size = 11)
+```
+
+
+## Run tests, save result, using URL
+
+Directory structure: 
+
+- Shiny Test POC
+ - shinytest 
+  - app
+   - app.R
+  - Shinytest2-Markdown-POC.Rmd
+  - tests
+    - testthat.R
+    - testthat 
+     - setup-shinytest2.R
+     - test-shinytest2.R
+
+App developer url: <https://colorado.posit.co/rsc/connect/#/apps/d90d5410-0cff-40d5-80a0-2284bbbe7ac8/access> 
+
+Note that the shiny testing packages do not have --user, --password, or --connect-api-key arguments for security reasons, so that these strings will not appear in a process list. Instead, the SHINYCANNON_USER, SHINYCANNON_PASS, and SHINYCANNON_CONNECT_API_KEY environment variables must be set. SHINYCANNON_CONNECT_API_KEY will take preference over SHINYCANNON_USER and SHINYCANNON_PASS.
+
+Slack messages: 
+
+- "On windows, chromote might need a kick start to connect. Here's what barret uses now in shinytest2 (and I have an earlier iteration of this in learnr's tests). https://github.com/rstudio/shinytest2/blob/main/R/app-driver-initialize.R#L168-L183" <https://positpbc.slack.com/archives/C03HH2ZUU/p1668607027052999?thread_ts=1668551709.852859&cid=C03HH2ZUU>
+- "One issue that kelly has been looking into is getting the system libraries for running headless Chrome installed so that my students can practice using shinytest2 . I think it's been logged by the engineering team (see https://github.com/rstudio/lucid-images-ide/issues/156 ), but I did a quick test and the libraries are still not present." <https://positpbc.slack.com/archives/C03917DM656/p1657760023254609?thread_ts=1657660426.146709&cid=C03917DM656> 
+
+Here is what needed to be installed: 
+
+```bash
+# Install libraries & database related packages separately to break up the layers
+RUN apt-get update -qq && \
+    libcurl4-openssl-dev
+    
+# Install google-chrome for shinytest2 (headless browser testing). Could also use google's apt repo.
+RUN wget -q https://julialang-s3.julialang.org/bin/linux/x64/1.0/julia-1.0.5-linux-x86_64.tar.gz && \
+    tar -C /usr/local -zxf julia-1.0.5-linux-x86_64.tar.gz && \
+    ln -s /usr/local/julia-1.0.5/bin/julia /usr/local/bin/julia && \
+    rm julia-1.0.5-linux-x86_64.tar.gz
+    rm julia-1.0.5-linux-x86_64.tar.gz && \
+    echo Installing google-chrome && \
+    curl -fsSL -o /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    gdebi -n /tmp/google-chrome.deb && \
+    rm /tmp/google-chrome.deb
+```
+
+Some useful git issues for future inspiration: 
+
+- Provide envvars to shinytest2 appdriver: <https://github.com/rstudio/shinytest2/issues/311> 
+
+```{r}
+target_url <- "https://colorado.posit.co/rsc/content/d90d5410-0cff-40d5-80a0-2284bbbe7ac8"
+
+# test_res<-shinytest2::test_app("./app/app.R")
+
+# Start AppDriver with recorder url
+#chrome <- shinytest2::AppDriver$new("https://colorado.posit.co/rsc/content/d90d5410-0cff-40d5-80a0-2284bbbe7ac8", load_timeout = 15 * 1000)
+
+#test_res<-shinytest2::test_app(target_url)
+
+# test_res<-shinytest2::test_app("shinytest/app.R")
+
+# test deployed app here
+#test_res<-shinytest2::test_app("http://azrldsbdgap03.corp.zoetis.com/connect/#/apps/8e391e8d-3379-4106-a13a-db70ab4a6122")
+# line 37 fails as test_app needs app.R file
+
+# kable(test_res) %>% 
+#   kable_styling(font_size = 11)
+```
+
+
+## Troubleshooting 
+
+### Error 1: 
+
+> "load(file, DLLpath = DLLpath, ...) : 
+  unable to load shared object '/usr/home/lisa.anders/.cache/R/renv/cache/v5/R-4.2/x86_64-pc-linux-gnu/websocket/1.4.1/76e0d400757e318cca33def29ccebbc2/websocket/libs/websocket.so':
+  libssl.so.1.1: cannot open shared object file: No such file or directory"
+  
+Fixed with: 
+
+```r
+renv::purge("offending-package") 
+install.packages("offending-package") 
+renv::repair()
+```
+
+restart R session 
+
+### Error 2: 
+
+> From Workbench the error: "Reason: `shinytest2::AppDriver` can not be initialized as {chromote} can not be started" 
+Reference: <https://community.rstudio.com/t/shinytest2-issue-executing-tests/163678/4> and <https://github.com/rstudio/rstudio/issues/12960> 
+
+It would appear that Connect has a similar issue 
+
+# Zoetis
+
+# Current Test  
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+
+# library(shinytest2)
+# library(kableExtra)
+# 
+# test_res<-shinytest2::test_app("shinytest/app.R")
+# 
+# # test deployed app here
+# #test_res<-shinytest2::test_app("http://azrldsbdgap03.corp.zoetis.com/connect/#/apps/8e391e8d-3379-4106-a13a-db70ab4a6122")
+# # line 37 fails as test_app needs app.R file
+# 
+# kable(test_res) %>% 
+#   kable_styling(font_size = 11)
+  
+```
+
+## Latest test information.
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+# library(dplyr)
+# test_info<-test_res %>% 
+#   as.data.frame() %>% 
+#   mutate(TestID=147,
+#     Module="ShinyUI",
+#          SubModule="mvp",
+#          TestName="mvpdeploy",
+#          TestDescription="ui test deploy mvp",
+#          TestSource="shinytest2",
+#          TestType="Integrated",
+#          TestQuery=NULL,
+#          TestExpected=TRUE,
+#          created_on=Sys.time(),
+#          updated_on=Sys.time(),"failed"=0) %>% 
+#   select(TestID:updated_on,failed)
+# 
+# test_info_excel<-test_info %>% select(-failed)
+# 
+# kable(test_info_excel)%>%
+#   kable_styling(font_size = 11)
+```  
+
+
+## Latest Test Execution  
+- If FAILS >0 in fail column, test fails. TestResult 0  
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+# test_execution<-test_info %>% select(TestID,failed) %>% 
+#   mutate(TestExecutionDate = Sys.time(),
+#          TestResult=ifelse(failed==0,1,0), # add logic to account for if test failed/skipped vs passed
+#          TestObserved=TRUE,
+#          created_on=Sys.time(),
+#          updated_on=Sys.time()) %>% 
+#   select(-failed)
+# 
+# 
+# library(kableExtra)
+# kable(test_execution)%>%
+#   kable_styling(font_size = 11)
+```
+
+# All tests
+Runs a scheduled test and saves it to a location.
+This MVP uses pins, future CPV tests can be written to the test database.
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+# library(pins)
+# board <- pins::board_rsconnect()
+# 
+# # Read latest pin data ---------------------------------
+# pin_data_test_info <- board %>% pin_read("TENNANTV/shinytest2_mvp_test_info_excel")
+# 
+# # Pin latest test to board ------------------------------
+# pins::pin_write(board,
+#   test_info_excel,
+#   name = "shinytest2_mvp_test_info_excel")
+# 
+# # Combine old tests & new --------------------------------
+#  test_info_res<-rbind(pin_data_test_info,test_info_excel)
+#   board %>% pin_write(test_info_res,"TENNANTV/shinytest2_mvp_test_info_excel")
+# 
+#   
+# # Read latest pin data ---------------------------------
+# pin_data_exec <- board %>% pin_read("TENNANTV/shinytest2_mvp_test_execution")  
+#   
+# # Pin latest record to board -----------------------------
+# pins::pin_write(board,
+#   test_execution,
+#   name = "shinytest2_mvp_test_execution")
+# 
+#  # Combine old tests & new --------------------------------
+#  test_exec_res<-rbind(pin_data_exec,test_execution)
+#   board %>% pin_write(test_exec_res,"TENNANTV/shinytest2_mvp_test_execution")
+
+```
+
+## Test Execution
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+# kable(test_info_res)%>%
+#   kable_styling(font_size = 11)
+  
+```
+
+## Test Info
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+# kable(test_exec_res) %>%
+#   kable_styling(font_size = 11)
+```
+
+

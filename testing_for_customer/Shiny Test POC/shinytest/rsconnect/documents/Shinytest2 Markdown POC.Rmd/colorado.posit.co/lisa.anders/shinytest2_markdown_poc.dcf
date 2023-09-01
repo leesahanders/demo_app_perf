@@ -1,0 +1,14 @@
+name: shinytest2_markdown_poc
+title: Shinytest2 Markdown POC
+username: lisa.anders
+account: lisa.anders
+server: colorado.posit.co
+hostUrl: https://colorado.posit.co/rsc/__api__
+appId: 17807
+bundleId: 79274
+url: https://colorado.posit.co/rsc/content/a78c6a82-8909-451a-85d6-a0e8e32d03ec/
+when: 1693586631.20873
+lastSyncTime: 1693586631.20875
+asMultiple: FALSE
+asStatic: FALSE
+additionalFiles: app/tests/testthat.R|app/tests/testthat/setup-shinytest2.R|app/tests/testthat/test-shinytest2.R

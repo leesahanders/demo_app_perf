@@ -1,0 +1,164 @@
+---
+title: "shinyloadtest"
+author: "Lisa.Anders"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Set working directory to test folder by running below in console: 
+# setwd(paste0(getwd(),"/test_slow"))
+# setwd(paste0("C:/Users/19796/Documents/Git/Rstudio/demo_app_perf/test_slow_on_connect_workbench"))
+
+```
+
+## Resources 
+
+ - Profiling your shiny app: <https://shiny.rstudio.com/articles/profiling.html> 
+ - Shinyloadtest package documentation: <https://rstudio.github.io/shinyloadtest/>
+ - Shinyloadtest git repo: <https://github.com/rstudio/shinyloadtest/> 
+ - Connect specific article: <https://rstudio.github.io/shinyloadtest/articles/load-testing-authenticated-apps.html>
+ - Installing shinycannon: <https://rstudio.github.io/shinyloadtest/articles/shinycannon.html#installation>
+ - Analyzing the results: <https://rstudio.github.io/shinyloadtest/articles/analyzing-load-test-logs.html> 
+
+Internal reference: <https://rstudioide.zendesk.com/agent/tickets/86733> and <https://positpbc.atlassian.net/wiki/spaces/PRO/pages/285769868/Novartis+Best+Practices+Call>
+
+## Secret management 
+
+The Connect API key is stored as the r environment variable `connect_api_key`. It can be edited/modified using the usethis package with: 
+```r
+library(usethis)
+usethis::edit_r_environ()
+```
+
+## Create "Recording" of a typical user's interaction
+
+Test a single app that has been deployed to Connect. Use the URL from the "open solo" mode on Connect.  
+ - Solo mode is important. This URL, when opened with developer options, doesn't work: `https://colorado.posit.co/rsc/connect/#/apps/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/access` but this one does: `https://colorado.posit.co/rsc/content/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/`
+
+```{r}
+library(shinyloadtest)
+
+# For some reason it's failing on main currently, websocket error
+# shinyloadtest::record_session(
+#   target_app_url='https://colorado.posit.co/rsc/content/bec1d4bc-2ab7-4ba3-9bd6-b9e336bf3ff9/', 
+#   connect_api_key=Sys.getenv("CONNECT_API_KEY"))
+
+# Works on staging
+shinyloadtest::record_session(
+  target_app_url='https://staging.colorado.posit.co/rsc/content/837525f0-b7f7-4c6d-9cd1-77fdd4a2ebc0',
+  connect_api_key=Sys.getenv("CONNECT_API_KEY_STAGING"))
+```
+
+This generates a recording.log file which is the "typical user interacting with the app" which we will use for load testing. 
+
+Alternatively, we can programmatically create the recording using [shinytest2](https://rstudio.github.io/shinytest2/articles/use-application-audit.html?q=load%20test#load-testing-with-shinytest2). 
+
+## Install shinycannnon
+
+Download and install shinycannon: <https://rstudio.github.io/shinyloadtest/articles/shinycannon.html> 
+
+The below is using a windows OS, but can be modified for other OS. 
+
+Test that shinycannon works by calling the help documentation with: 
+
+```bash
+cd test_slow_on_connect_workbench
+java -jar shinycannon-1.1.3-dd43f6b.jar -h
+```
+
+Set the env variable for the connect api key in your terminal with (note that `set` is used in windows, `export` for mac or linux). Do this in terminal (after adding your API key). 
+
+Windows: 
+```bash
+set SHINYCANNON_CONNECT_API_KEY=<add your key here>
+```
+
+Linux: 
+```bash
+export SHINYCANNON_CONNECT_API_KEY=<add your key here>
+```
+
+Verify that it was set (note that %% is used in windows, $ in linux). 
+
+Windows: 
+```bash
+echo %SHINYCANNON_CONNECT_API_KEY%
+```
+
+Linux:
+```bash
+echo $SHINYCANNON_CONNECT_API_KEY
+```
+
+## Load testing
+
+The load testing will be run either from terminal or from R using the system or system2 commands to pass into the terminal. We will run the load test for simulating the number of simultaneous users, each time saving the results to a different folder. 
+
+Run the load test in terminal: 
+
+```bash
+java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://staging.colorado.posit.co/rsc/content/837525f0-b7f7-4c6d-9cd1-77fdd4a2ebc0 --workers 1 --loaded-duration-minutes 2 --output-dir run1 --overwrite-output
+```
+
+Change the output directory and number of workers and run it again: 
+
+```bash
+java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://staging.colorado.posit.co/rsc/content/837525f0-b7f7-4c6d-9cd1-77fdd4a2ebc0 --workers 3 --loaded-duration-minutes 2 --output-dir run3 --overwrite-output
+```
+
+```bash
+java -jar shinycannon-1.1.3-dd43f6b.jar recording.log https://staging.colorado.posit.co/rsc/content/837525f0-b7f7-4c6d-9cd1-77fdd4a2ebc0 --workers 7 --loaded-duration-minutes 2 --output-dir run7 --overwrite-output
+```
+
+Alternatively we could pass in the command from R using the `system()` command: 
+
+```{r}
+connect_api_key = Sys.getenv("CONNECT_API_KEY")
+
+system(
+  sprintf(
+    # "set SHINYCANNON_CONNECT_API_KEY=", #Change this if you are running on Windows
+     "export SHINYCANNON_CONNECT_API_KEY=",
+    connect_api_key
+    )
+)
+
+target_url <- "https://staging.colorado.posit.co/rsc/content/837525f0-b7f7-4c6d-9cd1-77fdd4a2ebc0"
+workers <- 1
+dir <- "run1"
+system(
+  sprintf(
+    "java -jar shinycannon-1.1.3-dd43f6b.jar recording.log %s --workers %s --loaded-duration-minutes 2 --output-dir %s --overwrite-output",
+    target_url, workers, dir
+  )
+)
+```
+
+Note that if you are getting a bunch of latency these notes will be useful: 
+
+ - <https://rstudio.github.io/shinyloadtest/articles/limitations-of-shinyloadtest.html>
+ - <https://github.com/rstudio/shinyloadtest/issues/121>
+
+
+## Analyzing the results 
+
+Reference the documentation to understand the different charts: <https://rstudio.github.io/shinyloadtest/articles/analyzing-load-test-logs.html?q=output#report-output> 
+
+```{r}
+library(shinyloadtest)
+library(dplyr)
+
+df <- load_runs(
+  `1 user` = "run1",
+  `3 users` = "run3",
+  `7 users` = "run7"
+)
+
+shinyloadtest_report(df, "report.html")
+
+```
+
+After running this, depending on your organizations security policies, it may help to open as a "preview" rather than in web browser (the error message will be something like "CORS restricted"). It may also be helpful to set self_contained = TRUE, or self_container = FALSE depending on any error messages encountered. 
+

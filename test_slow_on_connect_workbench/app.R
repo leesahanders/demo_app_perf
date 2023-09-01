@@ -36,7 +36,9 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   output$distPlot <- renderPlot({
-    Sys.sleep(3) # This simulates a long running function
+    # https://mastering-shiny.org/performance.html#the-flame-graph:~:text=Sys.sleep()%20asks%20the%20operating%20system%20to%20%E2%80%9Cpark%E2%80%9D%20the%20process%20for%20some%20amount%20of%20time%2C%20so%20R%20is%20not%20actually%20running.%20This%20is%20why%20we%20had%20to%20use%20profvis%3A%3Apause()%20above
+    #Sys.sleep(3) # This simulates a long running function
+    profivs::pause(3)
     
     # generate bins based on input$bins from ui.R
     x    <- faithful[, 2]

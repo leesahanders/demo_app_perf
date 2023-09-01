@@ -1,0 +1,13 @@
+name: shinytest_app
+title: shinytest_app
+username: lisa.anders
+account: lisa.anders
+server: colorado.posit.co
+hostUrl: https://colorado.posit.co/rsc/__api__
+appId: 17803
+bundleId: 79270
+url: https://colorado.posit.co/rsc/content/d90d5410-0cff-40d5-80a0-2284bbbe7ac8/
+when: 1693581827.81815
+lastSyncTime: 1693581827.81816
+asMultiple: FALSE
+asStatic: FALSE

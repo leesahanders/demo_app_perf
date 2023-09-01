@@ -566,7 +566,7 @@ Posit Solutions Engineering (Lisa Anders)
 <section id="part-1-user-recording" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Part 1: User Recording</h2>
 <p><font size="5"></font></p><font size="5">
-<p>The Connect API key is stored as the r environment variable <code>connect_api_key</code>. It can be edited/modified using the usethis package with:</p>
+<p>The Connect API key is stored as the r environment variable <code>connect_api_key</code>. It can be edited/modified using the <code>usethis</code> package with:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(usethis)</span>
 <span id="cb5-2"><a href="#cb5-2"></a>usethis<span class="sc">::</span><span class="fu">edit_r_environ</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Create “Recording” of a typical user’s interaction</p>
@@ -659,16 +659,6 @@ Posit Solutions Engineering (Lisa Anders)
 <section id="load-testing-output" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Load testing output</h2>
 <p><font size="6"></font></p><font size="6">
-<div class="quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 9.1%;justify-content: center;">
-<p><img data-src="https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png" width="70"></p>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 90.9%;justify-content: center;">
-<p><strong>shinyloadtest</strong> - Load testing helps developers and administrators estimate how many users their application can support.</p>
-</div>
-</div>
-</div>
 <center>
 <p><img data-src="https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png" style="width:70.0%"></p>
 <div class="citation" style="font-size: 16px">
@@ -680,16 +670,10 @@ Posit Solutions Engineering (Lisa Anders)
 <section id="load-testing-output-impact-on-session-duration" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Load testing output: Impact on session duration</h2>
 <p><font size="6"></font></p><font size="6">
-<div class="quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 9.1%;justify-content: center;">
-<p><img data-src="https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png" width="70"></p>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 90.9%;justify-content: center;">
-<p><strong>shinyloadtest</strong> - Load testing helps developers and administrators estimate how many users their application can support.</p>
-</div>
-</div>
-</div>
+<!-- ::: {layout="[2, 20]"} -->
+<!-- ![](https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png){width="70"} -->
+<!-- **shinyloadtest** - Load testing helps developers and administrators estimate how many users their application can support. -->
+<!-- ::: -->
 <center>
 <p><img data-src="https://rstudio.github.io/shinyloadtest/reference/figures/slt_report_screenshot.png" style="width:70.0%"></p>
 <!-- <left>![](images/rmarkdown_default.png){width="50%"}</left> -->
