@@ -8,6 +8,7 @@
 #
 
 ## https://shiny.posit.co/r/articles/build/upload/
+## https://shiny.posit.co/r/gallery/widgets/file-upload/
 
 library(shiny)
 
