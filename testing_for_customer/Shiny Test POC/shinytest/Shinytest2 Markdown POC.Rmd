@@ -143,7 +143,7 @@ target_url <- "https://colorado.posit.co/rsc/content/d90d5410-0cff-40d5-80a0-228
 # test_res<-shinytest2::test_app("shinytest/app.R")
 
 # test deployed app here
-#test_res<-shinytest2::test_app("http://azrldsbdgap03.corp.zoetis.com/connect/#/apps/8e391e8d-3379-4106-a13a-db70ab4a6122")
+#test_res<-shinytest2::test_app("")
 # line 37 fails as test_app needs app.R file
 
 # kable(test_res) %>% 
@@ -176,8 +176,6 @@ Reference: <https://community.rstudio.com/t/shinytest2-issue-executing-tests/163
 
 It would appear that Connect has a similar issue 
 
-# Zoetis
-
 # Current Test  
 ```{r,echo=FALSE,warning=FALSE,message=FALSE}
 
@@ -187,7 +185,7 @@ It would appear that Connect has a similar issue
 # test_res<-shinytest2::test_app("shinytest/app.R")
 # 
 # # test deployed app here
-# #test_res<-shinytest2::test_app("http://azrldsbdgap03.corp.zoetis.com/connect/#/apps/8e391e8d-3379-4106-a13a-db70ab4a6122")
+# #test_res<-shinytest2::test_app("")
 # # line 37 fails as test_app needs app.R file
 # 
 # kable(test_res) %>% 
